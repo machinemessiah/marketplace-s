@@ -6,6 +6,7 @@ import { t } from "i18next";
 
 import { ITEMS_PER_REQUEST, LOCALSTORAGE_KEYS, MARKETPLACE_VERSION } from "../constants";
 import { fetchAppManifest, fetchExtensionManifest, fetchThemeManifest, getBlacklist } from "../logic/FetchRemotes";
+import { getGitHubSortParams } from "../logic/SortUtils";
 import {
   addExtensionToSpicetifyConfig,
   exportMarketplace,
@@ -23,7 +24,6 @@ import {
   resetMarketplace
 } from "../logic/Utils";
 import type { RepoType, SortMode } from "../types/marketplace-types";
-import { getGitHubSortParams } from "../logic/SortUtils";
 
 (async function init() {
   if (!Spicetify.LocalStorage || !Spicetify.showNotification) {

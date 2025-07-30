@@ -2,8 +2,8 @@ import { t } from "i18next";
 
 import { BLACKLIST_URL, ITEMS_PER_REQUEST, SNIPPETS_URL } from "../constants";
 import type { CardItem, RepoTopic, Snippet, SortMode } from "../types/marketplace-types";
-import { addToSessionStorage, processAuthors } from "./Utils";
 import { getGitHubSortParams } from "./SortUtils";
+import { addToSessionStorage, processAuthors } from "./Utils";
 
 // TODO: add sort type, order, etc?
 // https://docs.github.com/en/github/searching-for-information-on-github/searching-on-github/searching-for-repositories#search-by-topic

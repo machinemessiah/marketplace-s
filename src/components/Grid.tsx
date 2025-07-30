@@ -8,6 +8,7 @@ const Spicetify = window.Spicetify;
 import { ITEMS_PER_REQUEST, LATEST_RELEASE_URL, LOCALSTORAGE_KEYS, MARKETPLACE_VERSION } from "../constants";
 import { fetchAppManifest, fetchCssSnippets, fetchExtensionManifest, fetchThemeManifest, getBlacklist, getTaggedRepos } from "../logic/FetchRemotes";
 import { openModal } from "../logic/LaunchModals";
+import { requiresClientSideSort } from "../logic/SortUtils";
 import { generateSchemesOptions, generateSortOptions, getLocalStorageDataFromKey, injectColourScheme, sortCardItems } from "../logic/Utils";
 import type { CardItem, CardType, Config, SchemeIni, Snippet, SortMode, TabItemConfig } from "../types/marketplace-types";
 import Button from "./Button";
@@ -20,7 +21,6 @@ import ThemeDeveloperToolsIcon from "./Icons/ThemeDeveloperToolsIcon";
 import SortBox from "./Sortbox";
 import { TopBarContent } from "./TabBar";
 import Tooltip from "./Tooltip";
-import { requiresClientSideSort } from "../logic/SortUtils";
 
 class Grid extends React.Component<
   {
