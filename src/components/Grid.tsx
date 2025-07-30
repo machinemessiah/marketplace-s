@@ -9,7 +9,7 @@ import { ITEMS_PER_REQUEST, LATEST_RELEASE_URL, LOCALSTORAGE_KEYS, MARKETPLACE_V
 import { fetchAppManifest, fetchCssSnippets, fetchExtensionManifest, fetchThemeManifest, getBlacklist, getTaggedRepos } from "../logic/FetchRemotes";
 import { openModal } from "../logic/LaunchModals";
 import { generateSchemesOptions, generateSortOptions, getLocalStorageDataFromKey, injectColourScheme, sortCardItems } from "../logic/Utils";
-import type { CardItem, CardType, Config, SchemeIni, Snippet, TabItemConfig } from "../types/marketplace-types";
+import type { CardItem, CardType, Config, SchemeIni, Snippet, SortMode, TabItemConfig } from "../types/marketplace-types";
 import Button from "./Button";
 import Card, { type Card as CardClass } from "./Card/Card";
 import DownloadIcon from "./Icons/DownloadIcon";
@@ -20,6 +20,7 @@ import ThemeDeveloperToolsIcon from "./Icons/ThemeDeveloperToolsIcon";
 import SortBox from "./Sortbox";
 import { TopBarContent } from "./TabBar";
 import Tooltip from "./Tooltip";
+import { requiresClientSideSort } from "../logic/SortUtils";
 
 class Grid extends React.Component<
   {
@@ -213,7 +214,9 @@ class Grid extends React.Component<
           }
         }
 
-        sortCardItems(extensions, localStorage.getItem("marketplace:sort") || "stars");
+        if (requiresClientSideSort(localStorage.getItem("marketplace:sort") as SortMode)) {
+          sortCardItems(extensions, localStorage.getItem("marketplace:sort") || "stars");
+        }
 
         for (const extension of extensions) {
           this.appendCard(extension, "extension", activeTab);
@@ -254,7 +257,9 @@ class Grid extends React.Component<
               installedOfType.push(installedItem);
             }
 
-            sortCardItems(installedOfType, localStorage.getItem("marketplace:sort") || "stars");
+            if (requiresClientSideSort(localStorage.getItem("marketplace:sort") as SortMode)) {
+              sortCardItems(installedOfType, localStorage.getItem("marketplace:sort") || "stars");
+            }
 
             for (const item of installedOfType) {
               this.appendCard(item, type as CardType, activeTab);
@@ -292,7 +297,9 @@ class Grid extends React.Component<
         }
         this.setState({ cards: this.cardList });
 
-        sortCardItems(themes, localStorage.getItem("marketplace:sort") || "stars");
+        if (requiresClientSideSort(localStorage.getItem("marketplace:sort") as SortMode)) {
+          sortCardItems(themes, localStorage.getItem("marketplace:sort") || "stars");
+        }
 
         for (const theme of themes) {
           this.appendCard(theme, "theme", activeTab);
@@ -334,7 +341,9 @@ class Grid extends React.Component<
         }
         this.setState({ cards: this.cardList });
 
-        sortCardItems(apps, localStorage.getItem("marketplace:sort") || "stars");
+        if (requiresClientSideSort(localStorage.getItem("marketplace:sort") as SortMode)) {
+          sortCardItems(apps, localStorage.getItem("marketplace:sort") || "stars");
+        }
 
         for (const app of apps) {
           this.appendCard(app, "app", activeTab);
@@ -360,7 +369,9 @@ class Grid extends React.Component<
         }
 
         if (snippets?.length) {
-          sortCardItems(snippets, localStorage.getItem("marketplace:sort") || "stars");
+          if (requiresClientSideSort(localStorage.getItem("marketplace:sort") as SortMode)) {
+            sortCardItems(snippets, localStorage.getItem("marketplace:sort") || "stars");
+          }
           for (const snippet of snippets) {
             this.appendCard(snippet, "snippet", activeTab);
           }

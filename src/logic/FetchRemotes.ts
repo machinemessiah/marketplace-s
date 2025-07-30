@@ -1,8 +1,9 @@
 import { t } from "i18next";
 
 import { BLACKLIST_URL, ITEMS_PER_REQUEST, SNIPPETS_URL } from "../constants";
-import type { CardItem, RepoTopic, Snippet } from "../types/marketplace-types";
+import type { CardItem, RepoTopic, Snippet, SortMode } from "../types/marketplace-types";
 import { addToSessionStorage, processAuthors } from "./Utils";
+import { getGitHubSortParams } from "./SortUtils";
 
 // TODO: add sort type, order, etc?
 // https://docs.github.com/en/github/searching-for-information-on-github/searching-on-github/searching-for-repositories#search-by-topic
@@ -15,8 +16,9 @@ import { addToSessionStorage, processAuthors } from "./Utils";
  * @returns Array of search results (filtered through the blacklist)
  */
 export async function getTaggedRepos(tag: RepoTopic, page = 1, BLACKLIST: string[] = [], showArchived = false) {
-  // www is needed or it will block with "cross-origin" error.
-  let url = `https://api.github.com/search/repositories?q=${encodeURIComponent(`topic:${tag}`)}&per_page=${ITEMS_PER_REQUEST}`;
+  const sort = getGitHubSortParams(localStorage.getItem("marketplace:sort") as SortMode);
+
+  let url = `https://api.github.com/search/repositories?q=${encodeURIComponent(`topic:${tag}`)}&per_page=${ITEMS_PER_REQUEST}${sort}`;
 
   // We can test multiple pages with this URL (58 results), as well as broken iamges etc.
   // let url = `https://api.github.com/search/repositories?q=${encodeURIComponent("topic:spicetify")}`;

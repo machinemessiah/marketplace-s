@@ -22,7 +22,8 @@ import {
   parseCSS,
   resetMarketplace
 } from "../logic/Utils";
-import type { RepoType } from "../types/marketplace-types";
+import type { RepoType, SortMode } from "../types/marketplace-types";
+import { getGitHubSortParams } from "../logic/SortUtils";
 
 (async function init() {
   if (!Spicetify.LocalStorage || !Spicetify.showNotification) {
@@ -191,8 +192,10 @@ import type { RepoType } from "../types/marketplace-types";
  */
 async function queryRepos(type: RepoType, pageNum = 1) {
   const BLACKLIST = window.sessionStorage.getItem("marketplace:blacklist");
+  const sort = getGitHubSortParams(localStorage.getItem("marketplace:sort") as SortMode);
 
-  let url = `https://api.github.com/search/repositories?per_page=${ITEMS_PER_REQUEST}&q=${encodeURIComponent(`topic:spicetify-${type}s`)}`;
+  let url = `https://api.github.com/search/repositories?per_page=${ITEMS_PER_REQUEST}&q=${encodeURIComponent(`topic:spicetify-${type}s`)}${sort}`;
+
   if (pageNum) url += `&page=${pageNum}`;
 
   const allRepos =
