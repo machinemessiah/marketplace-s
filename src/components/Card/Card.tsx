@@ -38,6 +38,7 @@ export class Card extends React.Component<
     externalUrl: string;
     lastUpdated: string | undefined;
     created: string | undefined;
+    imageFallbackAttempted: boolean;
   }
 > {
   // Theme stuff
@@ -84,7 +85,8 @@ export class Card extends React.Component<
           ? `https://github.com/${this.props.item.user}/${this.props.item.repo}`
           : "",
       lastUpdated: this.props.item.user && this.props.item.repo ? this.props.item.lastUpdated : undefined,
-      created: this.props.item.user && this.props.item.repo ? this.props.item.created : undefined
+      created: this.props.item.user && this.props.item.repo ? this.props.item.created : undefined,
+      imageFallbackAttempted: false
     };
   }
 
@@ -490,19 +492,27 @@ export class Card extends React.Component<
                   alt=""
                   aria-hidden="false"
                   draggable="false"
-                  loading="lazy"
-                  src={this.props.item.imageURL}
+                  //loading="lazy"
+                  src={
+                    this.state.imageFallbackAttempted
+                      ? this.props.item.imageURL
+                      : `https://images.weserv.nl/?url=${encodeURIComponent(this.props.item.imageURL)}&w=300&fit=contain&maxage=1M&output=jpg&q=70&we`
+                  }
                   className="main-image-image main-cardImage-image"
                   onError={(e) => {
-                    // Set to transparent PNG to remove the placeholder icon
-                    // https://png-pixel.com
-                    e.currentTarget.setAttribute(
-                      "src",
-                      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII"
-                    );
-
-                    // Add class for styling
-                    e.currentTarget.closest(".main-cardImage-imageWrapper")?.classList.add("main-cardImage-imageWrapper--error");
+                    if (!this.state.imageFallbackAttempted) {
+                      // @what - First failure: try original URL
+                      console.debug("Thumbnail failed, trying original URL");
+                      this.setState({ imageFallbackAttempted: true });
+                    } else {
+                      // @what - Second failure: use transparent placeholder
+                      console.debug("Original URL also failed, using placeholder");
+                      e.currentTarget.setAttribute(
+                        "src",
+                        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII"
+                      );
+                      e.currentTarget.closest(".main-cardImage-imageWrapper")?.classList.add("main-cardImage-imageWrapper--error");
+                    }
                   }}
                 />
               </div>
